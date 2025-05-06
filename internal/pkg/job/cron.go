@@ -1,7 +1,6 @@
 package job
 
 import (
-	"fmt"
 	"log/slog"
 	"time"
 )
@@ -15,12 +14,15 @@ func (job *Job) Run() {
 		return
 	}
 
-	errMsg := ""
+	logAttrs := []any{
+		slog.String("job", job.Label),
+		slog.Duration("duration", job.Duration),
+	}
 	if job.Result.ErrorMsg != "" {
-		errMsg = fmt.Sprintf("(err: %q)", job.Result.ErrorMsg)
+		logAttrs = append(logAttrs, slog.String("error", job.Result.ErrorMsg))
 	}
 
-	slog.Info("done", "job", job.Label, "duration", job.Duration, "errorMsg", errMsg)
+	slog.Info("job done", logAttrs...)
 
 	if job.scheduler.instance != nil && job.scheduler.entryID != 0 {
 		entry := job.scheduler.instance.Entry(job.scheduler.entryID)
