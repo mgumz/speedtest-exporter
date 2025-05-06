@@ -42,7 +42,7 @@ see "speedtest-go" for valid flags.
 Examples:
 
 $> speedtest-exporter -- -s 00001
-# probe every minute ther speedtest-net server "00001"
+# probe every minute the speedtest-net server "00001"
 
 Example Job File:
 
