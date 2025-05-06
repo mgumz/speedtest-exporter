@@ -50,9 +50,11 @@ type jobFileWatch struct {
 func (jw *jobFileWatch) Run() {
 
 	slog.Debug("starting to parse jobFile", "fileName", jw.name)
+
 	jobs, chksum, err := ParseJobFile(jw.name, jw.speedtestBin)
 	if err != nil {
 		slog.Warn("parsing jobFile failed", "fileName", jw.name, "error", err)
+		jw.collector.IncMetricJobFileFailed()
 		return
 	}
 	slog.Debug("done parsing jobFile",
@@ -64,6 +66,7 @@ func (jw *jobFileWatch) Run() {
 
 	if bytes.Equal(jw.chksum, chksum) {
 		slog.Debug("watched jobFile is unchanged", "fileName", jw.name)
+		jw.collector.IncMetricJobFileUnchanged()
 		return
 	}
 
@@ -71,6 +74,7 @@ func (jw *jobFileWatch) Run() {
 		"fileName", jw.name,
 		"numberJobs", len(jobs),
 	)
+	jw.collector.IncMetricJobFileChanged()
 
 	jobs.ReSchedule(jw.scheduler, jw.collector)
 

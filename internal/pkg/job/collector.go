@@ -9,6 +9,14 @@ type Collector struct {
 
 	mu sync.Mutex
 
+	metrics struct {
+		jobFileWatch struct {
+			changedTotal   int64
+			unchangedTotal int64
+			failedTotal    int64
+		}
+	}
+
 	opts collectorOpts
 }
 
@@ -73,4 +81,20 @@ func (c *Collector) UpdateJob(job JobMeta) bool {
 	}
 
 	return false
+}
+
+func (c *Collector) IncMetricJobFileFailed() {
+	c.mu.Lock()
+	c.metrics.jobFileWatch.failedTotal += 1
+	c.mu.Unlock()
+}
+func (c *Collector) IncMetricJobFileUnchanged() {
+	c.mu.Lock()
+	c.metrics.jobFileWatch.unchangedTotal += 1
+	c.mu.Unlock()
+}
+func (c *Collector) IncMetricJobFileChanged() {
+	c.mu.Lock()
+	c.metrics.jobFileWatch.changedTotal += 1
+	c.mu.Unlock()
 }

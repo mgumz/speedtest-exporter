@@ -19,6 +19,7 @@ const (
 var (
 	speedTestMM = []prometheus.MetricMeta{
 		{Name: "speedtest_runs_total", MType: "counter", Help: "number of speedtest runs"},
+		{Name: "speedtest_jobfile_parsed_total", MType: "counter", Help: "number of jobfile related parse runs"},
 		{Name: "speedtest_report_duration_seconds", MType: "gauge", Help: "duration of last speedtest run (in seconds)"},
 		{Name: "speedtest_report_count_hubs", MType: "gauge", Help: "number of hops visited in the last speedtest run"},
 	}
@@ -37,6 +38,13 @@ func (c *Collector) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	prometheus.WriteMeta(w, speedTestMM)
 	speedtest.WriteMetricsHelpType(w)
+
+	fmt.Fprintf(w, "speedtest_jobfile_parsed_total{reason=%q} %d\n",
+		"failed", c.metrics.jobFileWatch.failedTotal)
+	fmt.Fprintf(w, "speedtest_jobfile_parsed_total{reason=%q} %d\n",
+		"unchanged", c.metrics.jobFileWatch.unchangedTotal)
+	fmt.Fprintf(w, "speedtest_jobfile_parsed_total{reason=%q} %d\n",
+		"changed", c.metrics.jobFileWatch.changedTotal)
 
 	if len(c.jobs) == 0 {
 		fmt.Fprintln(w, "# no speedtest jobs defined (yet).")
