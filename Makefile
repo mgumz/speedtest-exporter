@@ -87,7 +87,7 @@ reports: report-misspell
 
 report-cyclo:
 	@echo '####################################################################'
-	gocyclo ./cmd/...
+	gocyclo cmd internal
 report-misspell:
 	@echo '####################################################################'
 	misspell .
