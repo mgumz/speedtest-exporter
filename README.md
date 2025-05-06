@@ -98,7 +98,7 @@ At `/metrics` the measured values of the last run are exposed.
 * `@hourly` | `@daily` etc - see https://pkg.go.dev/github.com/robfig/cron/v3#hdr-Predefined_schedules
 * `@every <duration>` - execute [speedtest-go] in an interval
 
-Optionally, if the `<schedule>` has a suffix of `<timeShiftSpec`, the actual
+Optionally, if the `<schedule>` has a suffix of `<timeShiftSpec>`, the actual
 execution of the job is, well, shifted. This is a **very** advisable feature to
 use: `speedtest` usually causes a noticeable amount of traffic, not only on
 the users side but _mainly_ on the server side as well as the hops in between.
