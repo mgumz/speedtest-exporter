@@ -4,14 +4,11 @@ BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 GIT_HASH=$(shell git rev-parse HEAD)
 CONTAINER_PLATFORM?=linux/amd64
 
-TARGETS=linux.amd64 	\
-	linux.386 			\
-	linux.arm64 		\
-	linux.mips64 		\
-	windows.amd64.exe 	\
-	freebsd.amd64 		\
-	darwin.amd64 		\
-	darwin.arm64
+TARGETS=\
+	linux.amd64 linux.386 linux.arm64 linux.mips64	\
+	windows.amd64.exe								\
+	freebsd.amd64									\
+	darwin.amd64 darwin.arm64
 
 BINARIES=$(addprefix bin/$(PROJECT)-$(VERSION)., $(TARGETS))
 RELEASES=$(subst windows.amd64.tar.gz,windows.amd64.zip,$(foreach r,$(subst .exe,,$(TARGETS)),releases/$(PROJECT)-$(VERSION).$(r).tar.gz))
@@ -132,7 +129,7 @@ fetch-report-tool-grype:
 	go install github.com/anchore/grype@latest
 
 
-test:
-	go test -v ./cmd/$(PROJECT)
+tests:
+	go test -v ./cmd/$(PROJECT) ./internal/...
 
 .PHONY: $(PROJECT) bin/$(PROJECT) binaries releases
