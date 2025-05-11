@@ -28,7 +28,7 @@ func newFlags() *steFlags {
 	flag.StringVar(&ste.schedule, "schedule", "@every 24h", "schedule at which often `speedtest-go` is launched")
 	flag.StringVar(&ste.timeShift, "timeshift", "", "timeshift the -schedule a bit")
 	flag.StringVar(&ste.doWatchJobsFile, "watch-jobs", "", "re-parse -jobs file to schedule")
-	flag.BoolVar(&ste.doPrintVersion, "version", false, "show version")
+	flag.BoolVar(&ste.doPrintVersion, "show-version", false, "show version")
 	flag.BoolVar(&ste.doPrintLicense, "show-license", false, "show license")
 	flag.BoolVar(&ste.doPrintUsage, "h", false, "show help")
 	flag.StringVar(&ste.logLevel, "log-level", "info", "log level")
