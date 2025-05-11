@@ -22,7 +22,8 @@ Usually, [speedtest-go] is producing the following output:
     ✓ Upload: 54.34 Mbps (Used: 71.26MB) (Latency: 46ms Jitter: 30ms Min: 16ms Max: 121ms)
     ✓ Packet Loss: N/A
 
-`speedtest-exporter` exposes the measured values like this:
+`speedtest-exporter` exposes the measured values like this at the `/metrics`
+endpoint:
 
     # 1 speedtest jobs defined
     # speedtest run speedtest-exporter-cli: 2025-04-13T13:43:46.002883Z -- speedtest-go --json -s 00001
@@ -82,7 +83,11 @@ When [prometheus] scrapes the data, you can visualise the observed values:
     SPEEDTEST-GO-FLAGS:
     see "speedtest-go" for valid flags.
 
-At `/metrics` the measured values of the last run are exposed.
+### HTTP Endpoints
+
+* /metrics - metrics in prometheus format
+* /health  - endpoint to indicate the healthieness
+* /        - small info page with link to /metrics
 
 ### Examples
 
