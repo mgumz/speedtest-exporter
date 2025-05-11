@@ -49,8 +49,8 @@ $> speedtest-exporter -- -s 00001
 Example Job File:
 
     # comments are ignored
-    job1 -- @every 24h ±10m -- -s 00001
-    job2 -- @daily ±15m -- -s 00002`
+    job1 -- @every 24h ~10m -- -s 00001
+    job2 -- @daily ~15m -- -s 00002`
 
 	fmt.Println(usage)
 }

@@ -31,14 +31,16 @@ func NewSchedule(mode Mode, spec, timeshift string) (cron.Schedule, error) {
 		if err != nil {
 			return nil, fmt.Errorf("unparseable timeshift deviation %q", timeshift)
 		}
-		return NewRandomDeviationSchedule(sched, deviation)
+		rds, err := NewRandomDeviationSchedule(sched, deviation)
+		return rds, err
 
 	case RandomDelay:
 		delay, err := time.ParseDuration(timeshift)
 		if err != nil {
 			return nil, fmt.Errorf("unparseable timeshift delay %q", timeshift)
 		}
-		return NewRandomDelaySchedule(sched, delay)
+		rds, err := NewRandomDelaySchedule(sched, delay)
+		return rds, nil
 	}
 
 	return nil, fmt.Errorf("unknown timeshift.Mode %d", mode)

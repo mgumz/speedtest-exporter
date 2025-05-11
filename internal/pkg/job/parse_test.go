@@ -23,12 +23,13 @@ func Test_ParseScheduleTimeshift(t *testing.T) {
 		{"trailing space  ", expT{nil, "trailing space", timeshift.None, ""}},
 		{"  prefix space", expT{nil, "prefix space", timeshift.None, ""}},
 
-		{"@every 1h ±1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
-		{"@every 1h ±1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
-		{" @every 1h ±1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
-		{"@every 1h ± 1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
-		{"@every 1h ± 1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
-		{"@every 1h ± +1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "+1h"}},
+		// disabled timeshift.RandomDeviation
+		//{"@every 1h ±1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
+		//{"@every 1h ±1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
+		//{" @every 1h ±1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
+		//{"@every 1h ± 1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
+		//{"@every 1h ± 1h ", expT{nil, "@every 1h", timeshift.RandomDeviation, "1h"}},
+		//{"@every 1h ± +1h", expT{nil, "@every 1h", timeshift.RandomDeviation, "+1h"}},
 
 		{"@every 1h ~1h", expT{nil, "@every 1h", timeshift.RandomDelay, "1h"}},
 		{"@every 1h ~1h ", expT{nil, "@every 1h", timeshift.RandomDelay, "1h"}},

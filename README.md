@@ -115,19 +115,15 @@ the users side but _mainly_ on the server side as well as the hops in between.
 
 `<timeShiftSpec>` - Different timeshift expressions in the Jobs-File are supported.
 
-* `±<duration>` - adds random deviaton of <duration> the otherwise planned point in time.
-                Example given: `@every 1h ±7m` will trigger the job somewhen in
-                the range of xx:53 to yy:07. The effective range is given as
-                `[-<duraction> .. <planned-point-in-time .. +<duration>]`.
 * `~<duration>` - adds a random delay to the otherwise planned point in time.
-                  Example given: `@every 1h ~ 10m` will trigger the job
+                  Example given: `@every 1h ~10m` will trigger the job
                   somewhen in the range of xx:00 to xx:10. The effective range
                   is given as `[<planned-point-in-time .. +<duration>]`.
 
 Examples:
 
-    # measure each midnight ± 10 minutes the speed to server 00001
-    nightly -- @midnight ±10m -- -s 00001
+    # measure each midnight (+ a random timshift of up to 10 minutes) the speed to server 00001
+    nightly -- @midnight ~10m -- -s 00001
     # measure only connectivity every hour, no real up or download
     connectivity -- @every 1h -- -s 00001 --no-upload --no-download
     # measure first of month

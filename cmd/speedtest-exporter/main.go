@@ -52,7 +52,7 @@ func main() {
 	if len(flag.Args()) > 0 {
 		tmode := timeshift.None
 		if stef.timeShift != "" {
-			tmode = timeshift.RandomDeviation
+			tmode = timeshift.RandomDelay
 		}
 		j := job.NewJob(stef.speedtestBin, flag.Args(), stef.schedule, tmode, stef.timeShift)
 		j.Label = stef.jobLabel

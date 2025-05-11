@@ -92,11 +92,13 @@ func parseSchedule(s string) (string, timeshift.Mode, string, error) {
 	tsMode := timeshift.None
 	tsMarker := ""
 
-	if i := strings.IndexAny(s, "±~"); i > 0 {
+	if i := strings.IndexAny(s, "~"); i > 0 {
 		switch {
-		case strings.HasPrefix(s[i:], "±"):
-			tsMode = timeshift.RandomDeviation
-			tsMarker = "±"
+		// NOTE: disabled for now, see timeshift.RandomDeviationScheduler for
+		// the yet-to-be-solved issues
+		//case strings.HasPrefix(s[i:], "±"):
+		//	tsMode = timeshift.RandomDeviation
+		//	tsMarker = "±"
 		case strings.HasPrefix(s[i:], "~"):
 			tsMode = timeshift.RandomDelay
 			tsMarker = "~"
