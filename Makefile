@@ -75,6 +75,8 @@ deps-ls-updates:
 	go list -m -mod=readonly -f '{{if not .Indirect}}{{.}}{{end}}' -u all
 
 
+generate-code:
+	go generate -v ./cmd/...
 
 compile-analysis: cmd/$(PROJECT)
 	go build -gcflags '-m' ./$^

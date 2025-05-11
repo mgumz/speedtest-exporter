@@ -32,6 +32,10 @@ func main() {
 		flag.Usage()
 		return
 	}
+	if stef.doPrintLicense {
+		printLicense()
+		return
+	}
 
 	// logging
 	logLevel, err := logLevel(stef.logLevel)

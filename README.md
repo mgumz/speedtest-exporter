@@ -75,6 +75,8 @@ When [prometheus] scrapes the data, you can visualise the observed values:
                 if it has changed stop previously running speedtest-jobs and apply
                 all jobs defined in -jobs.
     -version
+    -show-license
+                show license
                 show version
 
     SPEEDTEST-GO-FLAGS:
