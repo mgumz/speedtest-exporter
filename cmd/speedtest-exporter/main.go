@@ -6,7 +6,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -72,6 +71,10 @@ func main() {
 	if stef.jobFile != "" {
 		if stef.doWatchJobsFile != "" {
 
+			slog.Info("watching -jobs-file",
+				"jobs.fileName", stef.jobFile,
+				"jobs.schedule", stef.doWatchJobsFile)
+
 			wi := job.WatchJobsFileInfo{
 				Name:            stef.jobFile,
 				SpeedtestBinary: stef.speedtestBin,
@@ -84,7 +87,9 @@ func main() {
 
 			jobsFromFile, _, err := job.ParseJobFile(stef.jobFile, stef.speedtestBin)
 			if err != nil {
-				slog.Error("parsing jobs file failed", "fileName", stef.jobFile, "error", err)
+				slog.Error("parsing jobs file failed",
+					"jobs.fileName", stef.jobFile,
+					"error", err)
 				os.Exit(1)
 			}
 			if !jobsFromFile.Empty() {

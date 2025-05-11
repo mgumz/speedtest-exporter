@@ -51,30 +51,37 @@ type jobFileWatch struct {
 
 func (jw *jobFileWatch) Run() {
 
-	slog.Debug("starting to parse jobFile", "fileName", jw.name)
+	slog.Debug("starting to parse jobFile",
+		"jobs.fileName", jw.name)
 
 	jobs, chksum, err := ParseJobFile(jw.name, jw.speedtestBin)
 	if err != nil {
-		slog.Warn("parsing jobFile failed", "fileName", jw.name, "error", err)
+		slog.Warn("parsing jobFile failed",
+			"jobs.fileName", jw.name,
+			"status", "failed",
+			"error", err)
 		jw.collector.IncMetricJobFileFailed()
 		return
 	}
 	slog.Debug("done parsing jobFile",
-		"fileName", jw.name,
-		"numberJobs", len(jobs),
-		"previousSha256", fmt.Sprintf("%x", jw.chksum),
-		"currentSha256", fmt.Sprintf("%x", chksum),
+		"jobs.fileName", jw.name,
+		"jobs.number", len(jobs),
+		"jobs.prevSha256", fmt.Sprintf("%x", jw.chksum),
+		"jobs.sha256", fmt.Sprintf("%x", chksum),
 	)
 
 	if bytes.Equal(jw.chksum, chksum) {
-		slog.Debug("watched jobFile is unchanged", "fileName", jw.name)
+		slog.Debug("watched jobFile is unchanged",
+			"jobs.fileName", jw.name,
+			"status", "unchanged")
 		jw.collector.IncMetricJobFileUnchanged()
 		return
 	}
 
 	slog.Info("watched jobFile has changed, scheduling jobs",
-		"fileName", jw.name,
-		"numberJobs", len(jobs),
+		"jobs.fileName", jw.name,
+		"jobs.number", len(jobs),
+		"status", "changed",
 	)
 	jw.collector.IncMetricJobFileChanged()
 
