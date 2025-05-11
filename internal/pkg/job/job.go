@@ -73,11 +73,8 @@ func (job *Job) Launch() error {
 	duration := time.Since(launched)
 
 	errMsg := normalizeSpeedtestErrorMsg(bufStderr.String())
-	if val, exists := job.Runs[errMsg]; exists {
-		job.Runs[errMsg] = val + 1
-	} else {
-		job.Runs[errMsg] = 1
-	}
+	val, _ := job.Runs[errMsg]
+	job.Runs[errMsg] = val + 1
 
 	// decode the report
 	result := speedtest.Result{}
