@@ -129,6 +129,11 @@ Examples:
     monthly -- 0 * 1 * * -- -s 00001
 
 
+### Signals
+
+* USR1 - print the currently active schedule of jobs to the logs
+
+
 ## Requirements
 
 Runtime:

@@ -98,3 +98,10 @@ func (c *Collector) IncMetricJobFileChanged() {
 	c.metrics.jobFileWatch.changedTotal += 1
 	c.mu.Unlock()
 }
+
+func (c *Collector) NumberJobs() int {
+	c.mu.Lock()
+	n := len(c.jobs)
+	c.mu.Unlock()
+	return n
+}

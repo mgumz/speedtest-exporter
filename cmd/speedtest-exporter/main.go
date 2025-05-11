@@ -47,7 +47,7 @@ func main() {
 	slog.SetDefault(logger)
 
 	// ok, lets go:
-	collector := job.NewCollector()
+	jobsCollector := job.NewCollector()
 	jobs := job.Jobs{}
 
 	if len(flag.Args()) > 0 {
@@ -60,14 +60,28 @@ func main() {
 		jobs = append(jobs, j)
 	}
 
-	jobsAvailable := !jobs.Empty()
+	jobsScheduler := cron.New(
+		cron.WithLocation(time.UTC),
+		cron.WithChain(
+			cron.SkipIfStillRunning(cron.DiscardLogger),
+		),
+	)
+
+	jobsArePossible := !jobs.Empty()
 
 	if stef.jobFile != "" {
 		if stef.doWatchJobsFile != "" {
-			slog.Info("watching -jobs-file", "fileName", stef.jobFile, "schedule", stef.doWatchJobsFile)
-			job.WatchJobsFile(stef.jobFile, stef.speedtestBin, stef.doWatchJobsFile, collector)
-			jobsAvailable = true
+
+			wi := job.WatchJobsFileInfo{
+				Name:            stef.jobFile,
+				SpeedtestBinary: stef.speedtestBin,
+				WatchSchedule:   stef.doWatchJobsFile,
+			}
+			job.WatchJobsFile(&wi, jobsScheduler, jobsCollector)
+			jobsArePossible = true
+
 		} else {
+
 			jobsFromFile, _, err := job.ParseJobFile(stef.jobFile, stef.speedtestBin)
 			if err != nil {
 				slog.Error("parsing jobs file failed", "fileName", stef.jobFile, "error", err)
@@ -75,32 +89,32 @@ func main() {
 			}
 			if !jobsFromFile.Empty() {
 				jobs = append(jobs, jobsFromFile...)
-				jobsAvailable = true
+				jobsArePossible = true
 			}
 		}
 	}
 
-	if !jobsAvailable {
+	if !jobsArePossible {
 		slog.Error("no speedtest jobs defined - provide at least one via -file or via arguments")
 		os.Exit(1)
 	}
 
-	scheduler := cron.New(
-		cron.WithLocation(time.UTC),
-		cron.WithChain(
-			cron.SkipIfStillRunning(cron.DiscardLogger),
-		),
-	)
-
-	if err := jobs.ReSchedule(scheduler, collector); err != nil {
-		slog.Error("", "error", err)
-		os.Exit(1)
+	if !jobs.Empty() { // jobs are only filled when not -watch-jobs is active
+		if err := jobs.ReSchedule(jobsScheduler, jobsCollector); err != nil {
+			slog.Error("", "error", err)
+			os.Exit(1)
+		}
 	}
 
-	http.Handle("/metrics", collector)
+	go handleSignals(jobsScheduler)
+
+	http.Handle("/metrics", jobsCollector)
 	http.HandleFunc("/health", handleHealth)
 	http.HandleFunc("/", handleRoot)
 
-	slog.Info("serving ...", "path", "/metrics", "bindAddr", stef.bindAddr)
-	log.Fatal(http.ListenAndServe(stef.bindAddr, nil))
+	slog.Info("serving ...",
+		"http.path", "/metrics",
+		"http.bindAddr", stef.bindAddr)
+
+	http.ListenAndServe(stef.bindAddr, nil)
 }

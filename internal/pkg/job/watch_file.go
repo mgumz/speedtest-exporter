@@ -10,32 +10,34 @@ import (
 	"github.com/robfig/cron/v3"
 )
 
-func WatchJobsFile(name, speedtestBin, watchSchedule string, collector *Collector) {
+type WatchJobsFileInfo struct {
+	Name            string
+	SpeedtestBinary string
+	WatchSchedule   string
+}
+
+func WatchJobsFile(wi *WatchJobsFileInfo, scheduler *cron.Cron, collector *Collector) {
 
 	watcher := &jobFileWatch{
-		name:         name,
-		speedtestBin: speedtestBin,
-		scheduler: cron.New(
-			cron.WithLocation(time.UTC),
-			cron.WithChain(
-				cron.SkipIfStillRunning(cron.DiscardLogger),
-			),
-		),
-		collector: collector,
+		name:         wi.Name,
+		speedtestBin: wi.SpeedtestBinary,
+		scheduler:    scheduler,
+		collector:    collector,
 	}
 
 	watcher.Run()
 
-	// check `name` according to `watchSchedule`
-	scheduler := cron.New(
+	wscheduler := cron.New(
 		cron.WithLocation(time.UTC),
 	)
 
-	if _, err := scheduler.AddJob(watchSchedule, watcher); err != nil {
-		slog.Error("unable to launch watch-jobs scheduler", "error", err)
+	if _, err := wscheduler.AddJob(wi.WatchSchedule, watcher); err != nil {
+		slog.Error("unable to launch watch-jobs scheduler",
+			"jobs.fileName", wi.Name,
+			"error", err)
 		os.Exit(1)
 	}
-	scheduler.Start()
+	wscheduler.Start()
 }
 
 type jobFileWatch struct {
